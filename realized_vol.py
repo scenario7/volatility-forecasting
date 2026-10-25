@@ -13,6 +13,8 @@ def compute_realized_vol() -> pd.DataFrame:
     df = pd.read_csv(INPUT_FILE, index_col="Date", parse_dates=True)
     vix = pd.read_csv("vix_daily.csv", index_col="Date", parse_dates=True)
 
+    df["RV_1"] = df["Log_Return"].abs() * np.sqrt(TRADING_DAYS)
+    df["RV_5"] = df["Log_Return"].rolling(window=5).std() * np.sqrt(TRADING_DAYS)
     df["RV_21"] = df["Log_Return"].rolling(window=WINDOW).std() * np.sqrt(TRADING_DAYS)
     df["RV_21_Fwd"] = df["RV_21"].shift(-WINDOW)
     df["VIX"] = vix["Close"]
